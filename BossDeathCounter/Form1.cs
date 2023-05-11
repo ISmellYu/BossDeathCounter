@@ -114,10 +114,22 @@ namespace BossDeathCounter
             UpdateEverythingDynamic();
         }
 
+        private void LoadValuesToButtons()
+        {
+            var currentBoss = StaticAccessor.GameState.Game.CurrentBoss;
+
+            if (currentBoss == null)
+                return;
+
+            if (currentBoss.IsPaused)
+                pauseBossButton.Text = "Resume boss";
+        }
+
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
             SetDefaultValues();
+            LoadValuesToButtons();
             UpdateEverythingDynamic();
             deathOverlay.Show();
         }
