@@ -4,18 +4,13 @@ namespace BossDeathCounter.Objects
 {
     public class Pause
     {
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public TimeSpan Duration => EndDate - StartDate;
-        
-        public Pause(DateTime startDate)
+        public DateTime PauseStart { get; set; }
+        public DateTime? PauseEnd { get; set; }
+        public TimeSpan? PauseDuration => PauseEnd - PauseStart;
+
+        public Pause(DateTime pauseStart)
         {
-            StartDate = startDate;
-        }
-        
-        public void PauseAttempt()
-        {
-            EndDate = DateTime.Now;
+            PauseStart = pauseStart;
         }
     }
 }

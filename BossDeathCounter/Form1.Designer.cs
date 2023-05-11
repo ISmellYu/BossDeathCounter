@@ -32,7 +32,7 @@
             this.bossListBox = new System.Windows.Forms.ListBox();
             this.bossSetButton = new System.Windows.Forms.Button();
             this.startDatePicker = new System.Windows.Forms.DateTimePicker();
-            this.namePicker = new System.Windows.Forms.TextBox();
+            this.bossNamePicker = new System.Windows.Forms.TextBox();
             this.deathsPicker = new System.Windows.Forms.TextBox();
             this.labelNameBoss = new System.Windows.Forms.Label();
             this.labelDeaths = new System.Windows.Forms.Label();
@@ -40,8 +40,8 @@
             this.addBossButton = new System.Windows.Forms.Button();
             this.removeBossButton = new System.Windows.Forms.Button();
             this.totalDeathsLabel = new System.Windows.Forms.Label();
-            this.totalDeathCounter = new System.Windows.Forms.TextBox();
-            this.totalDeathBossesCounter = new System.Windows.Forms.TextBox();
+            this.totalDeathsCounter = new System.Windows.Forms.TextBox();
+            this.totalDeathsBossesCounter = new System.Windows.Forms.TextBox();
             this.totalDeathsBossesLabel = new System.Windows.Forms.Label();
             this.endBossButton = new System.Windows.Forms.Button();
             this.pauseBossButton = new System.Windows.Forms.Button();
@@ -49,7 +49,15 @@
             this.currBossName = new System.Windows.Forms.Label();
             this.currDeaths = new System.Windows.Forms.Label();
             this.currTime = new System.Windows.Forms.Label();
-            this.pauseStatus = new System.Windows.Forms.Label();
+            this.bossStatus = new System.Windows.Forms.Label();
+            this.startBossButton = new System.Windows.Forms.Button();
+            this.dateNowCheckbox = new System.Windows.Forms.CheckBox();
+            this.timerUpdateTime = new System.Timers.Timer();
+            this.keyBindTimer = new System.Timers.Timer();
+            this.saveButton = new System.Windows.Forms.Button();
+            this.loadButton = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize) (this.timerUpdateTime)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.keyBindTimer)).BeginInit();
             this.SuspendLayout();
             // 
             // bossesLabel
@@ -78,6 +86,7 @@
             this.bossSetButton.TabIndex = 2;
             this.bossSetButton.Text = "Set boss";
             this.bossSetButton.UseVisualStyleBackColor = true;
+            this.bossSetButton.Click += new System.EventHandler(this.bossSetButton_Click);
             // 
             // startDatePicker
             // 
@@ -88,12 +97,12 @@
             this.startDatePicker.Size = new System.Drawing.Size(168, 20);
             this.startDatePicker.TabIndex = 3;
             // 
-            // namePicker
+            // bossNamePicker
             // 
-            this.namePicker.Location = new System.Drawing.Point(234, 128);
-            this.namePicker.Name = "namePicker";
-            this.namePicker.Size = new System.Drawing.Size(168, 20);
-            this.namePicker.TabIndex = 7;
+            this.bossNamePicker.Location = new System.Drawing.Point(234, 128);
+            this.bossNamePicker.Name = "bossNamePicker";
+            this.bossNamePicker.Size = new System.Drawing.Size(168, 20);
+            this.bossNamePicker.TabIndex = 7;
             // 
             // deathsPicker
             // 
@@ -140,6 +149,7 @@
             this.addBossButton.TabIndex = 13;
             this.addBossButton.Text = "Add";
             this.addBossButton.UseVisualStyleBackColor = true;
+            this.addBossButton.Click += new System.EventHandler(this.addBossButton_Click);
             // 
             // removeBossButton
             // 
@@ -149,6 +159,7 @@
             this.removeBossButton.TabIndex = 14;
             this.removeBossButton.Text = "Remove boss";
             this.removeBossButton.UseVisualStyleBackColor = true;
+            this.removeBossButton.Click += new System.EventHandler(this.removeBossButton_Click);
             // 
             // totalDeathsLabel
             // 
@@ -161,27 +172,27 @@
             this.totalDeathsLabel.Text = "Total Deaths";
             this.totalDeathsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // totalDeathCounter
+            // totalDeathsCounter
             // 
-            this.totalDeathCounter.Font = new System.Drawing.Font("Microsoft Sans Serif", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (238)));
-            this.totalDeathCounter.Location = new System.Drawing.Point(563, 463);
-            this.totalDeathCounter.Name = "totalDeathCounter";
-            this.totalDeathCounter.ReadOnly = true;
-            this.totalDeathCounter.Size = new System.Drawing.Size(189, 45);
-            this.totalDeathCounter.TabIndex = 16;
-            this.totalDeathCounter.Text = "123123";
-            this.totalDeathCounter.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.totalDeathsCounter.Font = new System.Drawing.Font("Microsoft Sans Serif", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (238)));
+            this.totalDeathsCounter.Location = new System.Drawing.Point(563, 463);
+            this.totalDeathsCounter.Name = "totalDeathsCounter";
+            this.totalDeathsCounter.ReadOnly = true;
+            this.totalDeathsCounter.Size = new System.Drawing.Size(189, 45);
+            this.totalDeathsCounter.TabIndex = 16;
+            this.totalDeathsCounter.Text = "123123";
+            this.totalDeathsCounter.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // totalDeathBossesCounter
+            // totalDeathsBossesCounter
             // 
-            this.totalDeathBossesCounter.Font = new System.Drawing.Font("Microsoft Sans Serif", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (238)));
-            this.totalDeathBossesCounter.Location = new System.Drawing.Point(637, 391);
-            this.totalDeathBossesCounter.Name = "totalDeathBossesCounter";
-            this.totalDeathBossesCounter.ReadOnly = true;
-            this.totalDeathBossesCounter.Size = new System.Drawing.Size(189, 45);
-            this.totalDeathBossesCounter.TabIndex = 18;
-            this.totalDeathBossesCounter.Text = "123123";
-            this.totalDeathBossesCounter.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.totalDeathsBossesCounter.Font = new System.Drawing.Font("Microsoft Sans Serif", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (238)));
+            this.totalDeathsBossesCounter.Location = new System.Drawing.Point(637, 391);
+            this.totalDeathsBossesCounter.Name = "totalDeathsBossesCounter";
+            this.totalDeathsBossesCounter.ReadOnly = true;
+            this.totalDeathsBossesCounter.Size = new System.Drawing.Size(189, 45);
+            this.totalDeathsBossesCounter.TabIndex = 18;
+            this.totalDeathsBossesCounter.Text = "123123";
+            this.totalDeathsBossesCounter.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // totalDeathsBossesLabel
             // 
@@ -202,6 +213,7 @@
             this.endBossButton.TabIndex = 19;
             this.endBossButton.Text = "End boss";
             this.endBossButton.UseVisualStyleBackColor = true;
+            this.endBossButton.Click += new System.EventHandler(this.endBossButton_Click);
             // 
             // pauseBossButton
             // 
@@ -211,6 +223,7 @@
             this.pauseBossButton.TabIndex = 21;
             this.pauseBossButton.Text = "Pause boss";
             this.pauseBossButton.UseVisualStyleBackColor = true;
+            this.pauseBossButton.Click += new System.EventHandler(this.pauseBossButton_Click);
             // 
             // statusLabel
             // 
@@ -246,31 +259,89 @@
             this.currTime.TabIndex = 26;
             this.currTime.Text = "Time";
             // 
-            // pauseStatus
+            // bossStatus
             // 
-            this.pauseStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (238)));
-            this.pauseStatus.Location = new System.Drawing.Point(663, 23);
-            this.pauseStatus.Name = "pauseStatus";
-            this.pauseStatus.Size = new System.Drawing.Size(144, 34);
-            this.pauseStatus.TabIndex = 27;
-            this.pauseStatus.Text = "PAUSED";
-            this.pauseStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.bossStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (238)));
+            this.bossStatus.Location = new System.Drawing.Point(663, 23);
+            this.bossStatus.Name = "bossStatus";
+            this.bossStatus.Size = new System.Drawing.Size(296, 34);
+            this.bossStatus.TabIndex = 27;
+            this.bossStatus.Text = "PAUSED";
+            this.bossStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // startBossButton
+            // 
+            this.startBossButton.Location = new System.Drawing.Point(637, 142);
+            this.startBossButton.Name = "startBossButton";
+            this.startBossButton.Size = new System.Drawing.Size(97, 30);
+            this.startBossButton.TabIndex = 28;
+            this.startBossButton.Text = "Start boss";
+            this.startBossButton.UseVisualStyleBackColor = true;
+            this.startBossButton.Click += new System.EventHandler(this.startBossButton_Click);
+            // 
+            // dateNowCheckbox
+            // 
+            this.dateNowCheckbox.Checked = true;
+            this.dateNowCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.dateNowCheckbox.Location = new System.Drawing.Point(414, 240);
+            this.dateNowCheckbox.Name = "dateNowCheckbox";
+            this.dateNowCheckbox.Size = new System.Drawing.Size(106, 20);
+            this.dateNowCheckbox.TabIndex = 29;
+            this.dateNowCheckbox.Text = "Now";
+            this.dateNowCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // timerUpdateTime
+            // 
+            this.timerUpdateTime.Enabled = true;
+            this.timerUpdateTime.SynchronizingObject = this;
+            this.timerUpdateTime.Elapsed += new System.Timers.ElapsedEventHandler(this.timerUpdateTime_Elapsed_1);
+            // 
+            // keyBindTimer
+            // 
+            this.keyBindTimer.Enabled = true;
+            this.keyBindTimer.Interval = 16D;
+            this.keyBindTimer.SynchronizingObject = this;
+            this.keyBindTimer.Elapsed += new System.Timers.ElapsedEventHandler(this.keyBindTimer_Elapsed);
+            // 
+            // saveButton
+            // 
+            this.saveButton.Location = new System.Drawing.Point(234, 22);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(76, 30);
+            this.saveButton.TabIndex = 30;
+            this.saveButton.Text = "Save";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
+            // 
+            // loadButton
+            // 
+            this.loadButton.Location = new System.Drawing.Point(316, 22);
+            this.loadButton.Name = "loadButton";
+            this.loadButton.Size = new System.Drawing.Size(76, 30);
+            this.loadButton.TabIndex = 31;
+            this.loadButton.Text = "Load";
+            this.loadButton.UseVisualStyleBackColor = true;
+            this.loadButton.Click += new System.EventHandler(this.loadButton_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(994, 528);
-            this.Controls.Add(this.pauseStatus);
+            this.Controls.Add(this.loadButton);
+            this.Controls.Add(this.saveButton);
+            this.Controls.Add(this.dateNowCheckbox);
+            this.Controls.Add(this.startBossButton);
+            this.Controls.Add(this.bossStatus);
             this.Controls.Add(this.currTime);
             this.Controls.Add(this.currDeaths);
             this.Controls.Add(this.currBossName);
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.pauseBossButton);
             this.Controls.Add(this.endBossButton);
-            this.Controls.Add(this.totalDeathBossesCounter);
+            this.Controls.Add(this.totalDeathsBossesCounter);
             this.Controls.Add(this.totalDeathsBossesLabel);
-            this.Controls.Add(this.totalDeathCounter);
+            this.Controls.Add(this.totalDeathsCounter);
             this.Controls.Add(this.totalDeathsLabel);
             this.Controls.Add(this.removeBossButton);
             this.Controls.Add(this.addBossButton);
@@ -278,33 +349,46 @@
             this.Controls.Add(this.labelDeaths);
             this.Controls.Add(this.labelNameBoss);
             this.Controls.Add(this.deathsPicker);
-            this.Controls.Add(this.namePicker);
+            this.Controls.Add(this.bossNamePicker);
             this.Controls.Add(this.startDatePicker);
             this.Controls.Add(this.bossSetButton);
             this.Controls.Add(this.bossListBox);
             this.Controls.Add(this.bossesLabel);
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.MaximizeBox = false;
             this.Name = "Form1";
+            this.Resizable = false;
+            this.ShowIcon = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "Death Boss Counter";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            ((System.ComponentModel.ISupportInitialize) (this.timerUpdateTime)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.keyBindTimer)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
-        private System.Windows.Forms.Label pauseStatus;
+        private System.Windows.Forms.Button saveButton;
+        private System.Windows.Forms.Button loadButton;
+        private System.Timers.Timer keyBindTimer;
+        private System.Timers.Timer timerUpdateTime;
+        private System.Windows.Forms.CheckBox dateNowCheckbox;
+        private System.Windows.Forms.Button startBossButton;
+        private System.Windows.Forms.Label bossStatus;
         private System.Windows.Forms.Label currBossName;
         private System.Windows.Forms.Label currDeaths;
         private System.Windows.Forms.Label currTime;
         private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.Button pauseBossButton;
         private System.Windows.Forms.Button endBossButton;
-        private System.Windows.Forms.TextBox totalDeathBossesCounter;
+        private System.Windows.Forms.TextBox totalDeathsBossesCounter;
         private System.Windows.Forms.Label totalDeathsBossesLabel;
-        private System.Windows.Forms.TextBox totalDeathCounter;
+        private System.Windows.Forms.TextBox totalDeathsCounter;
         private System.Windows.Forms.Label totalDeathsLabel;
         private System.Windows.Forms.Button addBossButton;
         private System.Windows.Forms.Button removeBossButton;
         private System.Windows.Forms.Label labelDeaths;
         private System.Windows.Forms.Label labelStartDate;
-        private System.Windows.Forms.TextBox namePicker;
+        private System.Windows.Forms.TextBox bossNamePicker;
         private System.Windows.Forms.TextBox deathsPicker;
         private System.Windows.Forms.Label labelNameBoss;
         private System.Windows.Forms.DateTimePicker startDatePicker;
