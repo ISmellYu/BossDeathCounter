@@ -34,7 +34,7 @@ namespace BossDeathCounter.Objects
         public void StartBoss()
         {
             if (HasStarted)
-                throw new Exception("Already started");
+                return;
             var dt = DateTime.Now;
             StartDate = dt;
             HasStarted = true;

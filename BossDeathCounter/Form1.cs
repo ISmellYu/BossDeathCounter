@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
+using System.Windows.Input;
 using BossDeathCounter.Objects;
 using MetroFramework.Forms;
 using BossDeathCounter.State;
@@ -76,7 +77,7 @@ namespace BossDeathCounter
                 // reset color
                 bossStatus.ForeColor = Color.White;
             }
-            bossStatus.Text = $"{currStatus}";
+            bossStatus.Text = currStatus;
         }
 
         private void UpdateEverythingDynamic()
@@ -235,7 +236,7 @@ namespace BossDeathCounter
         
         private void keyBindTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            short key = Imports.GetAsyncKeyState(0x2D); // ~ tylda 0x2D
+            var key = Imports.GetAsyncKeyState(0x2D); // ~ tylda 0x2D insert
             if ((key & 1) == 1)
             {
                 // labelDeaths.Text = (key & 0x8000).ToString();

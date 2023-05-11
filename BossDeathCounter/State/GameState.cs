@@ -34,7 +34,10 @@ namespace BossDeathCounter.State
 
         public void Load(string path)
         {
-            Game = JsonConvert.DeserializeObject<Game>(File.ReadAllText(path));
+            if (File.Exists(path))
+            {
+                Game = JsonConvert.DeserializeObject<Game>(File.ReadAllText(path));
+            }
         }
     }
 }
