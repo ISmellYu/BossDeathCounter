@@ -118,7 +118,7 @@ namespace BossDeathCounter
         {
             base.OnLoad(e);
             SetDefaultValues();
-
+            UpdateEverythingDynamic();
             deathOverlay.Show();
         }
         private void addBossButton_Click(object sender, EventArgs e)

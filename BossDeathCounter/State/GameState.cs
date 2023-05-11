@@ -14,7 +14,10 @@ namespace BossDeathCounter.State
             {
                 Game = JsonConvert.DeserializeObject<Game>(File.ReadAllText("save.json"));
             }
-            Game = new Game();
+            else
+            {
+                Game = new Game();
+            }
         }
 
         public void Save(string path)

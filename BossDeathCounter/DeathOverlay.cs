@@ -56,7 +56,6 @@ namespace BossDeathCounter
             var currentBoss = StaticAccessor.GameState.Game.CurrentBoss;
             if (currentBoss == null) 
                 return;
-            g.DrawRectangle(pen, Bounds.Width - OverlayWidth - 1, 0, OverlayWidth, OverlayHeight);
             g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
             g.DrawString(currentBoss.Name, font, brush, Bounds.Width - OverlayWidth - 1, 0);
             g.DrawString(currentBoss.Deaths.ToString(), font, brush, Bounds.Width - OverlayWidth - 1, 0 + fontSize);
