@@ -105,7 +105,8 @@ namespace BossDeathCounter
             currTime.Text = $"Time: {currBossTime.Hours}:{currBossTime.Minutes}:{currBossTime.Seconds}";
 
             UpdateStatusLabel();
-            
+
+            UpdateValuesToButtons();
             DeathOverlay.Instance.UpdateOverlay();
         }
 
@@ -115,22 +116,28 @@ namespace BossDeathCounter
             UpdateEverythingDynamic();
         }
 
-        private void LoadValuesToButtons()
+        private void UpdateValuesToButtons()
         {
             var currentBoss = StaticAccessor.GameState.Game.CurrentBoss;
 
             if (currentBoss == null)
+            {
+                pauseBossButton.Text = "Pause boss";
                 return;
+            }
 
             if (currentBoss.IsPaused)
                 pauseBossButton.Text = "Resume boss";
+            else
+            {
+                pauseBossButton.Text = "Pause boss";
+            }
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
             SetDefaultValues();
-            LoadValuesToButtons();
             UpdateEverythingDynamic();
             deathOverlay.Show();
         }
@@ -211,18 +218,11 @@ namespace BossDeathCounter
 
             if (currentBoss.IsPaused && !currentBoss.IsDead)
             {
-                if (StaticAccessor.GameState.Game.ResumeCurrentBoss())
-                {
-                    pauseBossButton.Text = "Pause boss";
-                }
-                
+                StaticAccessor.GameState.Game.ResumeCurrentBoss();
             }
             else
             {
-                if (StaticAccessor.GameState.Game.PauseCurrentBoss())
-                {
-                    pauseBossButton.Text = "Resume boss";
-                }
+                StaticAccessor.GameState.Game.PauseCurrentBoss();
             }
             UpdateEverythingDynamic();
         }
