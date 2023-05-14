@@ -140,6 +140,7 @@ public partial class Form1 : MetroForm
         UpdateEverythingDynamic();
         deathOverlay.Show();
     }
+    
     private void addBossButton_Click(object sender, EventArgs e)
     {
         var bossName = bossNamePicker.Text;
@@ -156,6 +157,13 @@ public partial class Form1 : MetroForm
             
             
         var startDeaths = Convert.ToInt32(deathsPicker.Text);
+
+        if (startDeaths < 0)
+        {
+            MessageBox.Show("Please enter a valid death number.");
+            return;
+        }
+            
             
         DateTime startDate;
         if (dateNowCheckbox.Checked)
