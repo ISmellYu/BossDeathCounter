@@ -17,247 +17,272 @@ using BossDeathCounter.State;
 using BossDeathCounter.Interop;
 using Newtonsoft.Json;
 
-namespace BossDeathCounter
+namespace BossDeathCounter;
+
+public partial class Form1 : MetroForm
 {
-    
-    public partial class Form1 : MetroForm
+    DeathOverlay deathOverlay = new DeathOverlay();
+    public Form1()
     {
-        DeathOverlay deathOverlay = new DeathOverlay();
-        public Form1()
+        InitializeComponent();
+    }
+
+    private TimeSpan GetCurrentBossTime()
+    {
+        var currentBoss = StaticAccessor.GameState.Game.CurrentBoss;
+        if (currentBoss == null)
+            return TimeSpan.Zero;
+
+        return currentBoss.GetCurrentTime();
+    }
+
+    private void UpdateStatusLabel()
+    {
+        var currentBoss = StaticAccessor.GameState.Game.CurrentBoss;
+        var currStatus = string.Empty;
+
+        if (currentBoss is not null)
         {
-            InitializeComponent();
-        }
-
-        private TimeSpan GetCurrentBossTime()
-        {
-            var currentBoss = StaticAccessor.GameState.Game.CurrentBoss;
-            if (currentBoss == null)
-                return TimeSpan.Zero;
-
-            return currentBoss.GetCurrentTime();
-        }
-
-        private void UpdateStatusLabel()
-        {
-            var currentBoss = StaticAccessor.GameState.Game.CurrentBoss;
-            var currStatus = string.Empty;
-
-            if (currentBoss is not null)
+            // first check if dead
+            if (currentBoss.IsDead)
             {
-                // first check if dead
-                if (currentBoss.IsDead)
-                {
-                    currStatus = "Dead";
-                    bossStatus.ForeColor = Color.Red;
-                    bossStatus.Text = $"Status: {currStatus}";
-                    return;
-                }
+                currStatus = "Dead";
+                bossStatus.ForeColor = Color.Red;
+                bossStatus.Text = $"Status: {currStatus}";
+                return;
+            }
 
-                if (currentBoss.HasStarted)
+            if (currentBoss.HasStarted)
+            {
+                if (currentBoss.IsPaused)
                 {
-                    if (currentBoss.IsPaused)
-                    {
-                        currStatus = "Paused";
-                        bossStatus.ForeColor = Color.Orange;
-                    }
-                    else
-                    {
-                        currStatus = "Running";
-                        bossStatus.ForeColor = Color.Green;
-                    }
+                    currStatus = "Paused";
+                    bossStatus.ForeColor = Color.Orange;
                 }
                 else
                 {
-                    currStatus = "Not Started";
-                    bossStatus.ForeColor = Color.Black;
+                    currStatus = "Running";
+                    bossStatus.ForeColor = Color.Green;
                 }
             }
             else
             {
-                // reset color
-                bossStatus.ForeColor = Color.White;
+                currStatus = "Not Started";
+                bossStatus.ForeColor = Color.Black;
             }
-            bossStatus.Text = currStatus;
+        }
+        else
+        {
+            // reset color
+            bossStatus.ForeColor = Color.White;
+        }
+        bossStatus.Text = currStatus;
+    }
+
+    private void UpdateEverythingDynamic()
+    {
+        // keep selected
+        var selectedPrev = bossListBox.SelectedItem;
+        var bosses = StaticAccessor.GameState.Game.Bosses.Select(p => p.Name).ToList();
+        bossListBox.DataSource = bosses;
+        if (bosses.Contains(selectedPrev))
+            bossListBox.SelectedItem = selectedPrev;
+
+        var currentBoss = StaticAccessor.GameState.Game.CurrentBoss;
+
+        var totaldeathsbosses = StaticAccessor.GameState.Game.Bosses.Sum(boss => boss.Deaths);
+        totalDeathsBossesCounter.Text = totaldeathsbosses.ToString();
+        totalDeathsCounter.Text = StaticAccessor.GameState.Game.TotalDeaths.ToString();
+            
+        var bossName = currentBoss?.Name ?? "None";
+        var currBossDeaths = currentBoss?.Deaths ?? 0;
+            
+        currBossName.Text = $"Name: {bossName}";
+        currDeaths.Text = $"Deaths: {currBossDeaths}";
+            
+        var currBossTime = GetCurrentBossTime();
+        currTime.Text = $"Time: {currBossTime.Hours}:{currBossTime.Minutes}:{currBossTime.Seconds}";
+
+        UpdateStatusLabel();
+
+        UpdateValuesToButtons();
+        DeathOverlay.Instance.UpdateOverlay();
+    }
+
+    private void SetDefaultValues()
+    {
+        deathsPicker.Text = 0.ToString();
+        UpdateEverythingDynamic();
+    }
+
+    private void UpdateValuesToButtons()
+    {
+        var currentBoss = StaticAccessor.GameState.Game.CurrentBoss;
+
+        if (currentBoss == null)
+        {
+            pauseBossButton.Text = "Pause boss";
+            return;
         }
 
-        private void UpdateEverythingDynamic()
+        if (currentBoss.IsPaused)
+            pauseBossButton.Text = "Resume boss";
+        else
         {
-            // keep selected
-            var selectedPrev = bossListBox.SelectedItem;
-            var bosses = StaticAccessor.GameState.Game.Bosses.Select(p => p.Name).ToList();
-            bossListBox.DataSource = bosses;
-            if (bosses.Contains(selectedPrev))
-                bossListBox.SelectedItem = selectedPrev;
-
-            var currentBoss = StaticAccessor.GameState.Game.CurrentBoss;
-
-            var totaldeathsbosses = StaticAccessor.GameState.Game.Bosses.Sum(boss => boss.Deaths);
-            totalDeathsBossesCounter.Text = totaldeathsbosses.ToString();
-            totalDeathsCounter.Text = StaticAccessor.GameState.Game.TotalDeaths.ToString();
-            
-            var bossName = currentBoss?.Name ?? "None";
-            var currBossDeaths = currentBoss?.Deaths ?? 0;
-            
-            currBossName.Text = $"Name: {bossName}";
-            currDeaths.Text = $"Deaths: {currBossDeaths}";
-            
-            var currBossTime = GetCurrentBossTime();
-            currTime.Text = $"Time: {currBossTime.Hours}:{currBossTime.Minutes}:{currBossTime.Seconds}";
-
-            UpdateStatusLabel();
-
-            UpdateValuesToButtons();
-            DeathOverlay.Instance.UpdateOverlay();
+            pauseBossButton.Text = "Pause boss";
         }
+    }
 
-        private void SetDefaultValues()
+    protected override void OnLoad(EventArgs e)
+    {
+        base.OnLoad(e);
+        SetDefaultValues();
+        UpdateEverythingDynamic();
+        deathOverlay.Show();
+    }
+    private void addBossButton_Click(object sender, EventArgs e)
+    {
+        var bossName = bossNamePicker.Text;
+        if (bossName == "")
         {
-            deathsPicker.Text = 0.ToString();
-            UpdateEverythingDynamic();
+            MessageBox.Show("Please enter a name for the boss.");
+            return;
         }
-
-        private void UpdateValuesToButtons()
+        if (StaticAccessor.GameState.Game.Bosses.Any(boss => boss.Name == bossName))
         {
-            var currentBoss = StaticAccessor.GameState.Game.CurrentBoss;
-
-            if (currentBoss == null)
+            MessageBox.Show("A boss with that name already exists.");
+            return;
+        }
+            
+            
+        var startDeaths = Convert.ToInt32(deathsPicker.Text);
+            
+        DateTime startDate;
+        if (dateNowCheckbox.Checked)
+            startDate = DateTime.Now;
+        else
+        {
+            if (startDatePicker.Value < DateTime.Now)
             {
-                pauseBossButton.Text = "Pause boss";
+                MessageBox.Show("Please enter a valid date.");
                 return;
             }
-
-            if (currentBoss.IsPaused)
-                pauseBossButton.Text = "Resume boss";
-            else
-            {
-                pauseBossButton.Text = "Pause boss";
-            }
+            startDate = startDatePicker.Value;
         }
-
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-            SetDefaultValues();
-            UpdateEverythingDynamic();
-            deathOverlay.Show();
-        }
-        private void addBossButton_Click(object sender, EventArgs e)
-        {
-            var bossName = bossNamePicker.Text;
-            if (bossName == "")
-            {
-                MessageBox.Show("Please enter a name for the boss.");
-                return;
-            }
-            if (StaticAccessor.GameState.Game.Bosses.Any(boss => boss.Name == bossName))
-            {
-                MessageBox.Show("A boss with that name already exists.");
-                return;
-            }
-            
-            
-            var startDeaths = Convert.ToInt32(deathsPicker.Text);
-            
-            DateTime startDate;
-            if (dateNowCheckbox.Checked)
-                startDate = DateTime.Now;
-            else
-            {
-                if (startDatePicker.Value < DateTime.Now)
-                {
-                    MessageBox.Show("Please enter a valid date.");
-                    return;
-                }
-                startDate = startDatePicker.Value;
-            }
                 
-            var boss = new Boss(bossName)
-            {
-                Deaths = startDeaths,
-                StartDate = startDate
-            };
-            StaticAccessor.GameState.Game.AddBoss(boss);
-            UpdateEverythingDynamic();
-        }
-        
-        private void bossSetButton_Click(object sender, EventArgs e)
+        var boss = new Boss(bossName)
         {
-            if (bossListBox.SelectedItem == null)
-                return;
-            var bossName = bossListBox.SelectedItem.ToString();
-            StaticAccessor.GameState.Game.SetCurrentBoss(bossName);
-            UpdateEverythingDynamic();
-        }
+            Deaths = startDeaths,
+            StartDate = startDate
+        };
+        StaticAccessor.GameState.Game.AddBoss(boss);
+        UpdateEverythingDynamic();
+    }
+        
+    private void bossSetButton_Click(object sender, EventArgs e)
+    {
+        if (bossListBox.SelectedItem == null)
+            return;
+        var bossName = bossListBox.SelectedItem.ToString();
+        StaticAccessor.GameState.Game.SetCurrentBoss(bossName);
+        UpdateEverythingDynamic();
+    }
 
-        private void removeBossButton_Click(object sender, EventArgs e)
-        {
-            if (bossListBox.SelectedItem == null)
-                return;
-            var bossName = bossListBox.SelectedItem.ToString();
-            StaticAccessor.GameState.Game.RemoveBoss(bossName);
-            UpdateEverythingDynamic();
-        }
+    private void removeBossButton_Click(object sender, EventArgs e)
+    {
+        if (bossListBox.SelectedItem == null)
+            return;
+        var bossName = bossListBox.SelectedItem.ToString();
+        StaticAccessor.GameState.Game.RemoveBoss(bossName);
+        UpdateEverythingDynamic();
+    }
         
-        private void startBossButton_Click(object sender, EventArgs e)
-        {
-            StaticAccessor.GameState.Game.StartCurrentBoss();
-            UpdateEverythingDynamic();
-        }
+    private void startBossButton_Click(object sender, EventArgs e)
+    {
+        StaticAccessor.GameState.Game.StartCurrentBoss();
+        UpdateEverythingDynamic();
+    }
         
-        private void endBossButton_Click(object sender, EventArgs e)
-        {
-            StaticAccessor.GameState.Game.EndCurrentBoss();
-            UpdateEverythingDynamic();
-        }
+    private void endBossButton_Click(object sender, EventArgs e)
+    {
+        StaticAccessor.GameState.Game.EndCurrentBoss();
+        UpdateEverythingDynamic();
+    }
         
-        private void pauseBossButton_Click(object sender, EventArgs e)
-        {
-            var currentBoss = StaticAccessor.GameState.Game.CurrentBoss;
-            if (currentBoss is null)
-                return;
+    private void pauseBossButton_Click(object sender, EventArgs e)
+    {
+        var currentBoss = StaticAccessor.GameState.Game.CurrentBoss;
+        if (currentBoss is null)
+            return;
 
-            if (currentBoss.IsPaused && !currentBoss.IsDead)
-            {
-                StaticAccessor.GameState.Game.ResumeCurrentBoss();
-            }
-            else
-            {
-                StaticAccessor.GameState.Game.PauseCurrentBoss();
-            }
-            UpdateEverythingDynamic();
+        if (currentBoss.IsPaused && !currentBoss.IsDead)
+        {
+            StaticAccessor.GameState.Game.ResumeCurrentBoss();
         }
+        else
+        {
+            StaticAccessor.GameState.Game.PauseCurrentBoss();
+        }
+        UpdateEverythingDynamic();
+    }
 
-        private void timerUpdateTime_Elapsed_1(object sender, ElapsedEventArgs e)
-        {
-            var currBossTime = GetCurrentBossTime();
-            DeathOverlay.Instance.UpdateOverlay();
-            currTime.Text = $"Time: {currBossTime.Hours}:{currBossTime.Minutes}:{currBossTime.Seconds}";
-        }
+    private void timerUpdateTime_Elapsed_1(object sender, ElapsedEventArgs e)
+    {
+        var currBossTime = GetCurrentBossTime();
+        DeathOverlay.Instance.UpdateOverlay();
+        currTime.Text = $"Time: {currBossTime.Hours}:{currBossTime.Minutes}:{currBossTime.Seconds}";
+    }
         
-        private void keyBindTimer_Elapsed(object sender, ElapsedEventArgs e)
+    private void keyBindTimer_Elapsed(object sender, ElapsedEventArgs e)
+    {
+        var key = Imports.GetAsyncKeyState(0x2D); // ~ tylda 0x2D insert
+        if ((key & 1) == 1)
         {
-            var key = Imports.GetAsyncKeyState(0x2D); // ~ tylda 0x2D insert
-            if ((key & 1) == 1)
-            {
-                // labelDeaths.Text = (key & 0x8000).ToString();
-                StaticAccessor.GameState.Game.IncrementDeaths();
-                UpdateEverythingDynamic();
-            }
-        }
-        
-        private void saveButton_Click(object sender, EventArgs e)
-        {
-            StaticAccessor.GameState.Save("save.json");
+            // labelDeaths.Text = (key & 0x8000).ToString();
+            StaticAccessor.GameState.Game.IncrementDeaths();
             UpdateEverythingDynamic();
         }
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+    }
+        
+    private void saveButton_Click(object sender, EventArgs e)
+    {
+        StaticAccessor.GameState.Save("save.json");
+        UpdateEverythingDynamic();
+    }
+    
+    private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        StaticAccessor.GameState.Save("save.json");
+    }
+    
+    private void loadButton_Click(object sender, EventArgs e)
+    {
+        StaticAccessor.GameState.Load("save.json");
+        UpdateEverythingDynamic();
+    }
+    
+    private void copyBossStr_Click(object sender, EventArgs e)
+    {
+        var currentBoss = StaticAccessor.GameState.Game.CurrentBoss;
+        if (currentBoss == null)
+            return;
+
+        if (!currentBoss.IsDead)
+            return;
+        
+        Clipboard.SetText(currentBoss.ToString());
+    }
+    
+    private void copyAllBossesStr_Click(object sender, EventArgs e)
+    {
+        var str = "";
+
+        foreach (var boss in StaticAccessor.GameState.Game.Bosses.Where(boss => boss.IsDead))
         {
-            StaticAccessor.GameState.Save("save.json");
+            str += boss.ToString();
+            str += "\n\n";
         }
-        private void loadButton_Click(object sender, EventArgs e)
-        {
-            StaticAccessor.GameState.Load("save.json");
-            UpdateEverythingDynamic();
-        }
+        
+        Clipboard.SetText(str);
     }
 }

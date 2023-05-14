@@ -56,6 +56,8 @@
             this.keyBindTimer = new System.Timers.Timer();
             this.saveButton = new System.Windows.Forms.Button();
             this.loadButton = new System.Windows.Forms.Button();
+            this.copyBossStr = new System.Windows.Forms.Button();
+            this.copyAllBossesStr = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize) (this.timerUpdateTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize) (this.keyBindTimer)).BeginInit();
             this.SuspendLayout();
@@ -262,9 +264,9 @@
             // bossStatus
             // 
             this.bossStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (238)));
-            this.bossStatus.Location = new System.Drawing.Point(663, 23);
+            this.bossStatus.Location = new System.Drawing.Point(787, 22);
             this.bossStatus.Name = "bossStatus";
-            this.bossStatus.Size = new System.Drawing.Size(296, 34);
+            this.bossStatus.Size = new System.Drawing.Size(160, 34);
             this.bossStatus.TabIndex = 27;
             this.bossStatus.Text = "PAUSED";
             this.bossStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -323,11 +325,33 @@
             this.loadButton.UseVisualStyleBackColor = true;
             this.loadButton.Click += new System.EventHandler(this.loadButton_Click);
             // 
+            // copyBossStr
+            // 
+            this.copyBossStr.Location = new System.Drawing.Point(0, 469);
+            this.copyBossStr.Name = "copyBossStr";
+            this.copyBossStr.Size = new System.Drawing.Size(97, 30);
+            this.copyBossStr.TabIndex = 32;
+            this.copyBossStr.Text = "Boss To String";
+            this.copyBossStr.UseVisualStyleBackColor = true;
+            this.copyBossStr.Click += new System.EventHandler(this.copyBossStr_Click);
+            // 
+            // copyAllBossesStr
+            // 
+            this.copyAllBossesStr.Location = new System.Drawing.Point(103, 469);
+            this.copyAllBossesStr.Name = "copyAllBossesStr";
+            this.copyAllBossesStr.Size = new System.Drawing.Size(127, 30);
+            this.copyAllBossesStr.TabIndex = 33;
+            this.copyAllBossesStr.Text = "All Bosses To String";
+            this.copyAllBossesStr.UseVisualStyleBackColor = true;
+            this.copyAllBossesStr.Click += new System.EventHandler(this.copyAllBossesStr_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(994, 528);
+            this.Controls.Add(this.copyAllBossesStr);
+            this.Controls.Add(this.copyBossStr);
             this.Controls.Add(this.loadButton);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.dateNowCheckbox);
@@ -367,6 +391,8 @@
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+        private System.Windows.Forms.Button copyAllBossesStr;
+        private System.Windows.Forms.Button copyBossStr;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button loadButton;
         private System.Timers.Timer keyBindTimer;

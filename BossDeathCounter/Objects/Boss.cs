@@ -42,9 +42,9 @@ namespace BossDeathCounter.Objects
 
         private TimeSpan CalculateTimeWithPauses()
         {
-            // it it is first pause in list calculate it with StartDate
+            // if it is first pause in list calculate it with StartDate
             // if is paused calculate time without datetime.now
-            // is its not paused calculate time with datetime.now
+            // if its not paused calculate time with datetime.now
             // 
             
             if (PauseTimes.Count == 0 && !IsPaused)
@@ -52,8 +52,8 @@ namespace BossDeathCounter.Objects
                 return DateTime.Now - StartDate.Value;
             }
 
-            var pauseDurations = TimeSpan.Zero;
-            if (IsDead)
+            TimeSpan pauseDurations;
+            if (IsDead) // fix it bcs if pauses are present it doesnt take into account attempt after last pause idk why
             {
                 pauseDurations = PauseTimes.Aggregate(TimeSpan.Zero, (current, pause) => current + pause.PauseDuration.Value);
                 
@@ -99,8 +99,8 @@ namespace BossDeathCounter.Objects
             var end = DateTime.Now;
             if (PauseTimes.Count > 0)
             {
-                var ps = PauseTimes.Last();
-                ps.PauseEnd = end;
+                var lastPause = PauseTimes.Last();
+                lastPause.PauseEnd ??= end;
             }
             IsPaused = false;
             EndDate = end;
@@ -146,6 +146,36 @@ namespace BossDeathCounter.Objects
             pause.PauseEnd = dt;
             IsPaused = false;
             return true;
+        }
+
+        public override string ToString()
+        {
+            if (!IsDead)
+                return "";
+            var hours = TotalTime.Hours;
+            var minutes = TotalTime.Minutes;
+            var seconds = TotalTime.Seconds;
+
+            var timeString = "";
+            if (hours != 0)
+                timeString += $"{hours}h ";
+            if (minutes != 0)
+                timeString += $"{minutes}min ";
+            if (minutes == 0) // means we append seconds
+            {
+                timeString += $"{seconds}s ";
+            }
+            if (seconds != 0)
+            {
+                if (minutes != 0)
+                {
+                    timeString += $"{seconds}s ";
+                }
+            }
+            
+                    
+            var output = $"{Name}: \nCzas bicia: {timeString}\nDeady: {Deaths}";
+            return output;
         }
     }
 }

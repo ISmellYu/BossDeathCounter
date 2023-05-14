@@ -66,7 +66,7 @@ namespace BossDeathCounter.Objects
 
         public void IncrementDeaths()
         {
-            if (CurrentBoss is {HasStarted: true})
+            if (CurrentBoss is {HasStarted: true, IsPaused: false})
             {
                 CurrentBoss.Deaths++;
             }
