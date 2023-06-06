@@ -28,8 +28,7 @@ jobs:
       - name: Archive app
         run: |
           mkdir build
-          cp -r BossDeathCounter/bin/Release/* build/
-          zip -r app.zip build/
+          cp BossDeathCounter/bin/Release/BossDeathCounter.exe build/BossDeathCounter.exe
 
       - name: Create Release
         id: create_release
@@ -50,6 +49,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GT_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: BossDeathCounter\bin\Release\BossDeathCounter.exe
+          asset_path: build\BossDeathCounter.exe
           asset_name: BossDeathCounter.exe
           asset_content_type: application/octet-stream
