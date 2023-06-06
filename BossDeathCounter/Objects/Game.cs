@@ -36,6 +36,8 @@ namespace BossDeathCounter.Objects
             {
                 CurrentBoss = null;
             }
+            // var deathsOnBoss = Bosses.Find(boss => boss.Name == name).Deaths; // tak ma byc xD
+            // TotalDeaths -= deathsOnBoss;
             Bosses.RemoveAll(boss => boss.Name == name);
         }
         

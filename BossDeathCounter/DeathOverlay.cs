@@ -71,4 +71,5 @@ public partial class DeathOverlay : Form
     {
         Invalidate();
     }
+    
 }
