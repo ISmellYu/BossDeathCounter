@@ -32,7 +32,10 @@ jobs:
 
       - name: Truncate Commit SHA
         id: truncate_sha
-        run: echo "::set-output name=sha_short::${{ github.sha }}"
+        run:  |
+          calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          echo "::set-output name=sha_short::${{ calculatedSha }}"
+          echo "${{ steps.truncate_sha.outputs.sha_short }}"
         
       - name: Create Release
         id: create_release
